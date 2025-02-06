@@ -1,0 +1,30 @@
+FROM node:18-alpine AS builder
+
+WORKDIR /app
+
+# Install dependencies
+COPY www/package*.json ./
+RUN npm install
+
+# Copy source code
+COPY www/ .
+
+# Build the application
+RUN npm run build
+
+FROM golang:1.22-alpine
+
+WORKDIR /app
+
+# Copy the built static files from the builder stage
+COPY --from=builder /app/out ./www/out
+
+# Copy Go source code
+COPY . .
+
+# Build the Go application
+RUN go build -o main ./app/cmd/www
+
+EXPOSE 3000
+
+CMD ["./main", "--staticIndex=/app/www/out"] 
