@@ -3,9 +3,9 @@ package main
 import (
 	"flag"
 	"fmt"
+	"synq/app/pkg/util/tracer"
 
 	web "synq/app/cmd/www/web"
-	utilContext "synq/app/pkg/util/context"
 	startup "synq/app/pkg/util/startup"
 )
 
@@ -23,7 +23,7 @@ func main() {
 	startup.StartupEndPoint(appname, "backEnd", *port, harnessInit)
 }
 
-func harnessInit(startupCtx utilContext.Context) {
+func harnessInit(startupCtx tracer.Context) {
 	startupCtx.InfoF("Starting up harness on Port %v\n", *port)
 	web.StaticConfig.ResourceDir = *staticIndex
 

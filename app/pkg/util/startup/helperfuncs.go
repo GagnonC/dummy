@@ -3,7 +3,7 @@ package startup
 import (
 	"flag"
 	"fmt"
-	utilContext "synq/app/pkg/util/context"
+	"synq/app/pkg/util/tracer"
 )
 
 func setServiceName(name string) {
@@ -18,7 +18,7 @@ func getServiceName() string {
 	return "default"
 }
 
-func logStartupVersion(ctx utilContext.Context, serviceName, service string) {
+func logStartupVersion(ctx tracer.Context, serviceName, service string) {
 	line := fmt.Sprintf("Starting up %s", serviceName)
 	if service != "" {
 		line += fmt.Sprintf(" - %s", service)
@@ -32,10 +32,10 @@ func logStartupVersion(ctx utilContext.Context, serviceName, service string) {
 	ctx.InfoF(line)
 }
 
-func ParseFlags(startupCtx utilContext.Context) {
+func ParseFlags(startupCtx tracer.Context) {
 	flag.Parse()
 
-	if *nonAwsInstance {
+	if *isLocal {
 		//TODO
 		/*
 			build out to do local vs cloud startup

@@ -1,19 +1,23 @@
 package api
 
 import (
+	"context"
+	"github.com/google/uuid"
 	"github.com/gorilla/mux"
 	"net/http"
 	"os"
-	utilContext "synq/app/pkg/util/context"
+	"synq/app/pkg/util/tracer"
 )
 
 func NewRouter() http.Handler {
 	router := mux.NewRouter().StrictSlash(true)
-	ctxProvider := utilContext.DefaultContextProvider("api", os.Stdout)
-	ctx := ctxProvider("api", "synq", "api", " api root call")
+	ctxProvider := tracer.DefaultContextProvider("api", os.Stdout)
+	ctx := ctxProvider("api", "api", "api", " api root call")
 	rInit := &iroute{
 		ctx: ctx,
 	}
+
+	router.Use(traceMiddleware(ctxProvider, rInit))
 
 	for _, route := range rInit.getRoutes() {
 		if route.Method != "" {
@@ -40,4 +44,16 @@ func enableCors(handler http.Handler) http.Handler {
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 		handler.ServeHTTP(w, r)
 	})
+}
+
+func traceMiddleware(rtx tracer.ContextProvider, rt *iroute) mux.MiddlewareFunc {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			unqID := uuid.New().String()
+			ctx := rtx("api", "", "", unqID)
+			r = r.WithContext(context.WithValue(r.Context(), "trace", unqID))
+			rt.ctx = ctx
+			next.ServeHTTP(w, r)
+		})
+	}
 }

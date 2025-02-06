@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"sync"
-	utilContext "synq/app/pkg/util/context"
+	"synq/app/pkg/util/tracer"
 	"time"
 )
 
@@ -14,7 +14,7 @@ type iroute struct {
 	Method      string
 	Pattern     string
 	HandlerFunc http.HandlerFunc
-	ctx         utilContext.Context
+	ctx         tracer.Context
 	hitCount    int
 	mu          sync.Mutex
 }
@@ -23,7 +23,7 @@ type routes []*iroute
 
 func (rt *iroute) getRoutes() routes {
 	return routes{
-		&iroute{Name: "PING", Method: "GET", Pattern: "/pinging", HandlerFunc: rt.ping},
+		&iroute{Name: "PING", Method: "GET", Pattern: "/healthz", HandlerFunc: rt.ping},
 		&iroute{Name: "HIT", Method: "GET", Pattern: "/hitCount", HandlerFunc: rt.getHitCountHandler},
 	}
 }

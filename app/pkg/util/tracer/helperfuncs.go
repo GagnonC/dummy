@@ -1,8 +1,9 @@
-package utilContext
+package tracer
 
 import (
 	"bytes"
 	"fmt"
+	"github.com/google/uuid"
 	"io"
 	"log"
 	"os"
@@ -16,6 +17,9 @@ func (c defaultContext) Get(key string) interface{} {
 
 func DefaultContextProvider(appName string, out io.Writer) ContextProvider {
 	return func(userID string, clientSystem string, interfce string, ids ...string) Context {
+		if len(ids) == 0 {
+			ids = append(ids, uuid.New().String())
+		}
 		return newContext(out, userID, clientSystem, interfce, ids...)
 	}
 }

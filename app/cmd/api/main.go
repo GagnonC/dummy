@@ -4,8 +4,8 @@ import (
 	"flag"
 	"fmt"
 	api "synq/app/cmd/api/api"
-	utilContext "synq/app/pkg/util/context"
 	startup "synq/app/pkg/util/startup"
+	"synq/app/pkg/util/tracer"
 )
 
 const (
@@ -21,7 +21,7 @@ func main() {
 	startup.StartupEndPoint(appname, "backEnd", *port, apiInit)
 }
 
-func apiInit(startupCtx utilContext.Context) {
+func apiInit(startupCtx tracer.Context) {
 	startupCtx.InfoF("Starting up harness on Port %v\n", *port)
 
 	router := api.NewRouter()

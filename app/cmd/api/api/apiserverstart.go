@@ -6,13 +6,12 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"synq/app/pkg/util/tracer"
 	"syscall"
 	"time"
-
-	utilContext "synq/app/pkg/util/context"
 )
 
-func StartHttpServerWithGracefulShutdown(ctx utilContext.Context, name string, address string, handler http.Handler) error {
+func StartHttpServerWithGracefulShutdown(ctx tracer.Context, name string, address string, handler http.Handler) error {
 	abort := make(chan bool)
 	done := make(chan bool)
 	go waitForInterrupt(ctx, abort)
@@ -55,12 +54,12 @@ func StartHttpServerWithGracefulShutdown(ctx utilContext.Context, name string, a
 	return nil
 }
 
-func waitForInterrupt(ctx utilContext.Context, notifier chan<- bool) {
+func waitForInterrupt(rtx tracer.Context, notifier chan<- bool) {
 	sigs := make(chan os.Signal, 1)
 	signal.Notify(sigs, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
 
 	s := <-sigs
-	ctx.InfoF("Detected signal %v", s)
+	rtx.InfoF("Detected signal %v", s)
 	notifier <- true
 
 }
