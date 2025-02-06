@@ -15,7 +15,7 @@ const (
 
 var (
 	port        = flag.Int("port", 3000, "Spec which port to proc on")
-	staticIndex = flag.String("staticIndex", "../../../www/build", "Fully qualified path to static resources.")
+	staticIndex = flag.String("staticIndex", "../../../www/out", "Fully qualified path to static resources.")
 )
 
 func main() {

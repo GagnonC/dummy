@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/synq.iml" filepath="$PROJECT_DIR$/synq.iml" />
-      <module fileurl="file://$PROJECT_DIR$/www.iml" filepath="$PROJECT_DIR$/www.iml" />
     </modules>
   </component>
 </project>
